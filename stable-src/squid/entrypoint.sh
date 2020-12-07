@@ -11,7 +11,8 @@ if [ -f /first-run ] ; then
 	rm /first-run
     if [ ! -z "$ICAP_ALLOW_ONLY_MIME_TYPE" ] ; then
         for mimetype in $( echo $ICAP_ALLOW_ONLY_MIME_TYPE | tr ',' ' ' ) ; do
-            echo      "acl allowicap rep_mime_type $mimetype" >>  /etc/squid/conf.d/allowicap.conf
+            echo      "acl allowicap_rep rep_mime_type $mimetype" >>  /etc/squid/conf.d/allowicap.conf
+            echo      "acl allowicap_req req_mime_type $mimetype" >>  /etc/squid/conf.d/allowicap.conf
             sed -i    '/allowicap/ s/#//g' /etc/squid/squid.conf
 	    sed -i -E 's/adaptation_access (.*) allow all$/adaptation_access \1 deny all/g' /etc/squid/squid.conf
 	    unset ICAP_EXCLUDE_MIME_TYPE 
@@ -19,7 +20,8 @@ if [ -f /first-run ] ; then
     fi
     if [ ! -z "$ICAP_EXCLUDE_MIME_TYPE" ] ; then
         for mimetype in $( echo $ICAP_EXCLUDE_MIME_TYPE | tr ',' ' ' ) ; do
-            echo "acl noicap rep_mime_type $mimetype"    >>  /etc/squid/conf.d/noicap.conf
+            echo "acl noicap_rep rep_mime_type $mimetype"    >>  /etc/squid/conf.d/noicap.conf
+            echo "acl noicap_req req_mime_type $mimetype"    >>  /etc/squid/conf.d/noicap.conf
             sed -i '/noicap/ s/#//g'    /etc/squid/squid.conf
         done
     fi
